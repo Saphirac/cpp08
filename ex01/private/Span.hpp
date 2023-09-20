@@ -49,12 +49,13 @@ public :
 
 	uint const	&getSize(void) const;
 	uint const	&getSizeMax(void) const;
-	std::list const	&getList(void) const;
+	std::list<int> const	&getList(void) const;
 
 	void	addNumber(int const &n);
+	void	addRange(std::list<int>::const_iterator itBegin, std::list<int>::const_iterator itEnd);
 	
-	uint const	shortestSpan(void) const;
-	uint const	longestSpan(void) const;
+	uint	shortestSpan(void) const;
+	uint	longestSpan(void) const;
 
 	Span	&operator=(Span const &src);
 };

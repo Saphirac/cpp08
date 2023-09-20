@@ -12,12 +12,14 @@
 
 #include "Span.hpp"
 #include <cstdlib>
+#include <climits>
+#include <algorithm>
 
 // Constructors and destructor //
 
 Span::Span(uint const &n) :
-_sizemax(n),
 _size(0),
+_sizemax(n),
 _list()
 {
 	if (DEBUG)
@@ -25,8 +27,8 @@ _list()
 }
 
 Span::Span(Span const &src) :
-_sizemax(src._sizemax),
 _size(src._size),
+_sizemax(src._sizemax),
 _list(src._list)
 {
 	if (DEBUG)
@@ -55,7 +57,7 @@ uint const	&Span::getSizeMax(void) const
 	return this->_sizemax;
 }
 
-std::list const	&Span::getList(void) const
+std::list<int> const	&Span::getList(void) const
 {
 	if (DEBUG)
 		std::cout << "Span getList() accessor called\n";
@@ -67,14 +69,14 @@ std::list const	&Span::getList(void) const
 char const	*Span::AlreadyFullException::what() const throw()
 {
 	if (DEBUG)
-		std::cout << "Span alreadyFullException thrown\n"
+		std::cout << "Span alreadyFullException thrown\n";
 	return "Span is already full";
 }
 
 char const	*Span::NoSpanException::what() const throw()
 {
 	if (DEBUG)
-		std::cout << "Span NoSpanException thrown\n"
+		std::cout << "Span NoSpanException thrown\n";
 	return "Can't get span";
 }
 
@@ -90,7 +92,7 @@ void	Span::addNumber(int const &n)
 	++this->_size;
 }
 	
-uint const	Span::shortestSpan(void) const
+uint	Span::shortestSpan(void) const
 {
 	if (DEBUG)
 		std::cout << "Span shortestSpan() member function called\n";
@@ -99,7 +101,7 @@ uint const	Span::shortestSpan(void) const
 	
 	uint							ret(UINT_MAX);
 	std::list<int>::const_iterator	i = this->_list.begin();
-	std::list<int>::const_iterator	j = this->_list.begin() + 1;
+	std::list<int>::const_iterator	j = ++this->_list.begin();
 	int								a;
 	int								b;
 
@@ -109,17 +111,17 @@ uint const	Span::shortestSpan(void) const
 		while (j != this->_list.end())
 		{
 			b = *j;
-			if (abs(a - b) < ret)
+			if (static_cast<uint>(a - b) < ret)
 				ret = abs(a - b);
 			j++;
 		}
-		i++;
-		j = i + 1;
+		j = ++i;
+		j++;
 	}
 	return ret;
 }
 
-uint const	Span::longestSpan(void) const
+uint	Span::longestSpan(void) const
 {
 	if (DEBUG)
 		std::cout << "Span longestSpan() member function called\n";
@@ -128,13 +130,24 @@ uint const	Span::longestSpan(void) const
 	return *std::max_element(this->_list.begin(), this->_list.end()) - *std::min_element(this->_list.begin(), this->_list.end());
 }
 
+void	Span::addRange(std::list<int>::const_iterator itBegin, std::list<int>::const_iterator itEnd)
+{
+	int								i;
+	std::list<int>::const_iterator	itTmp = itBegin;
+	for (i = 0; itTmp++ != itEnd; i++);
+	if (i + this->_size > this->_sizemax)
+		throw Span::AlreadyFullException();
+	this->_list.insert(this->_list.end(), itBegin, itEnd);
+	this->_size += i;
+}
+
 // Operators //
 
 Span	&Span::operator=(Span const &src)
 {
 	if (DEBUG)
 		std::cout << "Span copy operator called\n";
-	if (*this != src)
+	if (this != &src)
 	{
 		this->_size = src._size;
 		this->_sizemax = src._sizemax;
@@ -143,12 +156,12 @@ Span	&Span::operator=(Span const &src)
 	return *this;
 }
 
-std::ostream	&operator<<(std::ostream &o, Span const &src.)
+std::ostream	&operator<<(std::ostream &o, Span const &src)
 {
 	std::list<int>::const_iterator	iter;
 
 	o << "Span\n" << "\t" "size: " << src.getSize() << '\n'
-	<< "\t" "maxSize: " << src.getMaxSize() << '\n'
+	<< "\t" "maxSize: " << src.getSizeMax() << '\n'
 	<< "\t" "list: {";
 	iter = src.getList().begin();
 	while (iter != src.getList().end())
