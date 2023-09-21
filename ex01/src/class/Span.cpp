@@ -132,13 +132,10 @@ uint	Span::longestSpan(void) const
 
 void	Span::addRange(std::list<int>::const_iterator itBegin, std::list<int>::const_iterator itEnd)
 {
-	int								i;
-	std::list<int>::const_iterator	itTmp = itBegin;
-	for (i = 0; itTmp++ != itEnd; i++);
-	if (i + this->_size > this->_sizemax)
+	if (std::distance(itBegin, itEnd) + this->_size > this->_sizemax)
 		throw Span::AlreadyFullException();
 	this->_list.insert(this->_list.end(), itBegin, itEnd);
-	this->_size += i;
+	this->_size += std::distance(itBegin, itEnd);
 }
 
 // Operators //

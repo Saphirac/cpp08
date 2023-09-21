@@ -53,28 +53,28 @@ class	MutantStack : public std::stack<T>
 	{
 		if (DEBUG)
 			std::cout << "MutantStack iterator begin() function called\n";		
-		return this->c_begin();
+		return this->c.begin();
 	}
 
 	iterator		end(void)
 	{
 		if (DEBUG)
 			std::cout << "MutantStack iterator end() function called\n";
-		return this->c_end();
+		return this->c.end();
 	}
 
 	const_iterator	begin(void) const
 	{
 		if (DEBUG)
 			std::cout << "MutantStack const_iterator begin() function called\n";
-		return this->c_begin();
+		return this->c.begin();
 	}
 
 	const_iterator	end(void) const
 	{
 		if (DEBUG)
 			std::cout << "MutantStack const_iterator end() function called\n";
-		return this->c_end();
+		return this->c.end();
 	}
 
 	// Operators
